@@ -52,7 +52,7 @@ function authenticate(\Slim\Route $route) {
  * ----------- METHODS WITHOUT AUTHENTICATION ---------------------------------
  */
 /**
- * User Registration
+ * Tutor Registration
  * url - /register
  * method - POST
  * params - name, email, password
@@ -70,50 +70,19 @@ $app->post('/tutor', function() use ($app) {
             $gender=$app->request->post('gender');
             $qualification=$app->request->post('qualification');
             $experience=$app->request->post('experience');
+            $imagename=$phone_number.".jpg";
 
-            // validating email address
-            //validateEmail($email);
-
+            // upload image
             if (!isset($_FILES['image'])) {
 		        echoRespnse(201, "no file found");
-		    }
-
-		    $imgs[]=null;
-		    $dir="imagessss";
-		    mkdir($dir,0777);
-
-		    $files = $_FILES['image'];
-		    $cnt = count($files['name']);
-
-		    for($i = 0 ; $i < $cnt ; $i++) {
-		        if ($files['error'][$i] === 0) {
-		            $name = uniqid('img-'.date('Ymd').'-');
-		            if (move_uploaded_file($files['tmp_name'][$i], $dir.'/' . $name) === true) {
-		                $imgs[] = array('url' => $dir.'/' . $name, 'name' => $files['name'][$i]);
-		            }else{
-		            	echoRespnse(201, "no file upload");
-		            }
-
-		        }
-		    }
-
-		    $imageCount = count($imgs);
-
-		    if ($imageCount == 0) {
-		       echoRespnse(201, "no file upload");
 		    }else{
-		    	echoRespnse(201, "file upload : ".$imageCount);
+		    	move_uploaded_file($_FILES["image"]["tmp_name"], "../images/tutor/".$imagename);
 		    }
 
-		    $plural = ($imageCount == 1) ? '' : 's';
-
-		    foreach($imgs as $img) {
-		        printf('%s <img src="%s" width="50" height="50" /><br/>', $img['name'], $img['url']);
-		    }
 
             $db = new DbHandler();
             //$res = $db->createUser($name, $email, $password);
-            $res = $db->createTutor($phone_number, $password,$name,$gender,$qualification,$experience);
+            $res = $db->createTutor($phone_number, $password,$name,$gender,$qualification,$experience,$imagename);
 
             if ($res == USER_CREATED_SUCCESSFULLY) {
                 $response["error"] = false;

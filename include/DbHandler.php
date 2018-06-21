@@ -26,7 +26,7 @@ class DbHandler {
      * @param String $email User login email id
      * @param String $password User login password
      */
-    public function createTutor($phone, $password,$name,$gender,$qualification,$experience) {
+    public function createTutor($phone, $password,$name,$gender,$qualification,$experience,$imagename) {
         require_once 'PassHash.php';
 
         // First check if user already existed in db
@@ -37,11 +37,11 @@ class DbHandler {
             // Generating API key
             $api_key = $this->generateApiKey();
 
-            $image=$phone."jpg";
+            //$image=$phone."jpg";
 
             // insert query
             $stmt = $this->conn->prepare("INSERT INTO user (phone_number,password,name,gender,qualification,experience,api_key,image,is_tutor) values(?, ?, ?, ?, ?,?,?,?,1)");
-            $stmt->bind_param("ssssssss", $phone, $password_hash, $name,$gender,$qualification,$experience, $api_key,$image);
+            $stmt->bind_param("ssssssss", $phone, $password_hash, $name,$gender,$qualification,$experience, $api_key,$imagename);
 
             $result = $stmt->execute();
 
